@@ -43,6 +43,7 @@ The repo contains two workspaces:
 4. **(Optional) Enable live Google reviews**
    - Create `backend/.env` (if it doesn’t exist)
    - Add `GOOGLE_PLACES_API_KEY=<your Google Places key>` (and restart `npm run dev`)
+   - Add `CORS_ORIGINS=https://your-frontend.vercel.app,https://...` so deployed clients can call the API
 5. **Sign in**
    - Navigate to `http://localhost:5173/login`
    - Access code: `flex-manager`

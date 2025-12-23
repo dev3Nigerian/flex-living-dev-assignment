@@ -37,7 +37,7 @@ const LoginPage = () => {
             <h1 className="mt-4 text-4xl font-semibold leading-tight">
               Reviews Dashboard
               <br />
-              for modern hospitality teams.
+              for Flex Product Manager.
             </h1>
           </div>
           <p className="text-sm text-white/70">Mock login · Access code: flex-manager</p>
