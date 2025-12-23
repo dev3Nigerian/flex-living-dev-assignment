@@ -25,26 +25,7 @@ mockReviews.forEach((review) => {
 
 const app = express();
 
-const allowedOrigins = (process.env.CORS_ORIGINS ?? '')
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean);
-
-app.use(
-  cors({
-    origin:
-      allowedOrigins.length > 0
-        ? (requestOrigin, callback) => {
-          if (!requestOrigin) return callback(null, true);
-          if (allowedOrigins.includes(requestOrigin)) {
-            return callback(null, true);
-          }
-          return callback(new Error(`Origin ${requestOrigin} not allowed by CORS`));
-        }
-        : '*',
-    credentials: true,
-  }),
-);
+app.use(cors());
 app.use(express.json());
 
 const toSafeNumber = (value: unknown, fallback: number) => {
