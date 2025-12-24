@@ -62,5 +62,3 @@
 4. **Notifications:** Pipe flagged reviews into Slack or email digests.
 5. **Real storage:** Swap the JSON file for SQLite/Supabase to support multi-user edits and audit history.
 
-This document, combined with inline comments and tests, should give reviewers clarity on why certain implementation paths were chosen and how to extend the system quickly.
-

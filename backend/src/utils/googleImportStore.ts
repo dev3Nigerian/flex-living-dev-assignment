@@ -2,23 +2,33 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { GoogleImportStore, StoredGoogleReview, GoogleReviewEntry } from '../types';
 
-const STORAGE_PATH = path.resolve(process.cwd(), 'storage/googleImported.json');
+const STORAGE_DIR =
+  process.env.GOOGLE_IMPORT_STORE_PATH ??
+  (process.env.VERCEL ? '/tmp' : path.resolve(process.cwd(), 'storage'));
+const STORAGE_PATH = path.join(STORAGE_DIR, 'googleImported.json');
 
-const readStore = async (): Promise<GoogleImportStore> => {
+const ensureStoreFile = async (): Promise<void> => {
   try {
-    const raw = await fs.readFile(STORAGE_PATH, 'utf-8');
-    return JSON.parse(raw) as GoogleImportStore;
+    await fs.mkdir(STORAGE_DIR, { recursive: true });
+    await fs.access(STORAGE_PATH);
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
       const initial: GoogleImportStore = { byListing: {} };
       await fs.writeFile(STORAGE_PATH, JSON.stringify(initial, null, 2), 'utf-8');
-      return initial;
+      return;
     }
     throw error;
   }
 };
 
+const readStore = async (): Promise<GoogleImportStore> => {
+  await ensureStoreFile();
+  const raw = await fs.readFile(STORAGE_PATH, 'utf-8');
+  return JSON.parse(raw) as GoogleImportStore;
+};
+
 const writeStore = async (store: GoogleImportStore) => {
+  await ensureStoreFile();
   await fs.writeFile(STORAGE_PATH, JSON.stringify(store, null, 2), 'utf-8');
 };
 
