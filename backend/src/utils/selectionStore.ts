@@ -5,14 +5,22 @@ interface SelectionFile {
   selectedIds: number[];
 }
 
-const STORAGE_PATH = path.resolve(process.cwd(), 'storage/selectedReviews.json');
+const STORAGE_DIR =
+  process.env.SELECTION_STORE_PATH ??
+  (process.env.VERCEL ? '/tmp' : path.resolve(process.cwd(), 'storage'));
+const STORAGE_PATH = path.join(STORAGE_DIR, 'selectedReviews.json');
 
 const ensureStore = async (): Promise<void> => {
   try {
+    await fs.mkdir(STORAGE_DIR, { recursive: true });
     await fs.access(STORAGE_PATH);
-  } catch {
-    const initial: SelectionFile = { selectedIds: [] };
-    await fs.writeFile(STORAGE_PATH, JSON.stringify(initial, null, 2), 'utf-8');
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      const initial: SelectionFile = { selectedIds: [] };
+      await fs.writeFile(STORAGE_PATH, JSON.stringify(initial, null, 2), 'utf-8');
+      return;
+    }
+    throw error;
   }
 };
 
